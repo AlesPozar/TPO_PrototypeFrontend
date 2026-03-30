@@ -1,14 +1,18 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
+import { useState, useRef } from 'react'
 import { useStore } from '@/lib/store'
 
 type TopHeaderProps = {
   onProfileClick: () => void
+  onSearch: (pair: string) => void
 }
 
-export function TopHeader({ onProfileClick }: TopHeaderProps) {
+export function TopHeader({ onProfileClick, onSearch }: TopHeaderProps) {
   const userProfile = useStore((s) => s.userProfile)
+  const [query, setQuery] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // Avatar initials fallback
   const initials = (userProfile.nickname ?? 'U')
@@ -18,24 +22,48 @@ export function TopHeader({ onProfileClick }: TopHeaderProps) {
     .toUpperCase()
     .slice(0, 2)
 
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const trimmed = query.trim().toUpperCase()
+    if (!trimmed) return
+    onSearch(trimmed)
+  }
+
+  function handleClear() {
+    setQuery('')
+    inputRef.current?.focus()
+  }
+
   return (
     <header className="flex items-center h-14 px-4 gap-4 border-b border-border bg-[oklch(0.14_0_0)] shrink-0">
       {/* Left spacer — aligns with sidebar width (w-14 = 56px) */}
       <div className="w-0 shrink-0" />
 
       {/* Search bar — centered */}
-      <div className="flex-1 flex justify-center">
+      <form onSubmit={handleSubmit} className="flex-1 flex justify-center">
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
           <input
+            ref={inputRef}
             type="text"
-            placeholder="Search assets, wallets, accounts..."
-            className="w-full h-8 pl-8 pr-3 rounded-lg bg-[oklch(0.20_0_0)] border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[oklch(0.72_0.19_45_/_0.5)] transition-all"
-            readOnly
-            aria-label="Search (coming soon)"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search crypto pair (e.g. BTCUSDT)..."
+            className="w-full h-8 pl-8 pr-8 rounded-lg bg-[oklch(0.20_0_0)] border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[oklch(0.72_0.19_45_/_0.5)] transition-all"
+            aria-label="Search crypto pair"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
-      </div>
+      </form>
 
       {/* Right section */}
       <div className="flex items-center gap-2 shrink-0">
