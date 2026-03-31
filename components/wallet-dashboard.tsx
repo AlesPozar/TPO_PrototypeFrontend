@@ -27,6 +27,7 @@ export function WalletDashboard({ walletId, onDeleted }: WalletDashboardProps) {
   const removeWallet = useStore((s) => s.removeWallet)
   const removeWalletHolding = useStore((s) => s.removeWalletHolding)
   const setWalletHoldingsFromFetch = useStore((s) => s.setWalletHoldingsFromFetch)
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
 
   const [selected, setSelected] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -388,7 +389,7 @@ export function WalletDashboard({ walletId, onDeleted }: WalletDashboardProps) {
                       </span>
                     )}
                     <span className="text-sm font-semibold text-foreground">
-                      ${cur.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {currency}{cur.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     {changePct !== null && (
                       <span

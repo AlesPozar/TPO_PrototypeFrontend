@@ -3,6 +3,9 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import type { TooltipProps } from 'recharts'
 
+import { useStore } from '@/lib/store'
+
+
 type PieItem = {
   name: string
   value: number
@@ -15,6 +18,8 @@ type PortfolioPieProps = {
 }
 
 function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
+
   if (!active || !payload?.length) return null
   const item = payload[0]
   const total = payload[0]?.payload?.total ?? 0
@@ -29,7 +34,7 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
         <span className="font-semibold text-foreground">{item.name}</span>
       </div>
       <div className="mt-1 text-muted-foreground text-xs">
-        ${Number(item.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        {currency}{Number(item.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         {' '}· {pct}%
       </div>
     </div>
@@ -37,6 +42,8 @@ function CustomTooltip({ active, payload }: TooltipProps<number, string>) {
 }
 
 function CustomLegend({ payload }: { payload?: Array<{ color: string; value: string; payload: { value: number } }> }) {
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
+
   if (!payload) return null
   return (
     <ul className="flex flex-wrap gap-x-4 gap-y-1.5 justify-center mt-2">
@@ -48,7 +55,7 @@ function CustomLegend({ payload }: { payload?: Array<{ color: string; value: str
           />
           <span>{entry.value}</span>
           <span className="text-foreground font-medium">
-            ${entry.payload.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            {currency}{entry.payload.value.toLocaleString(undefined, { maximumFractionDigits: 0 })}
           </span>
         </li>
       ))}

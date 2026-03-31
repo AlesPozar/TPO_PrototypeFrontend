@@ -18,6 +18,7 @@ export function BankDashboard() {
   const dashboardTitles = useStore((s) => s.dashboardTitles)
   const renameDashboard = useStore((s) => s.renameDashboard)
   const clearAllBankData = useStore((s) => s.clearAllBankData)
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
 
   const [selected, setSelected] = useState<string | null>(null)
 
@@ -163,7 +164,7 @@ export function BankDashboard() {
                       </span>
                     </div>
                     <span className="text-sm font-semibold text-foreground">
-                      ${cur.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      {currency}{cur.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     {changePct !== null && (
                       <span

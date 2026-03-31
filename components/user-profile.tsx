@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { Camera, Pencil, Check, X, LogOut, Trash2, AlertTriangle, User } from 'lucide-react'
+import { Camera, Pencil, Check, X, LogOut, Trash2, AlertTriangle, User, Euro, DollarSign, Coins } from 'lucide-react'
 import { useStore } from '@/lib/store'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -19,6 +19,8 @@ export function UserProfile({ onBack }: UserProfileProps) {
   const [nicknameInput, setNicknameInput] = useState(userProfile.nickname)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showSignOutConfirm, setShowSignOutConfirm] = useState(false)
+
+  const selectedCurrency = userProfile.displayedCurrency ?? '$'
 
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -144,8 +146,9 @@ export function UserProfile({ onBack }: UserProfileProps) {
           )}
         </div>
 
-        {/* Nickname section */}
+        {/* Profile section */}
         <div className="w-full bg-[oklch(0.16_0_0)] rounded-xl border border-border p-5 flex flex-col gap-3">
+          {/* Display name section */}
           <div className="flex items-center gap-2">
             <User className="w-4 h-4 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Display Name</span>
@@ -193,6 +196,39 @@ export function UserProfile({ onBack }: UserProfileProps) {
               </button>
             </div>
           )}
+
+          {/* Currency section */}
+          <div className="flex items-center gap-2">
+            <Coins className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Displayed Currency</span>
+          </div>
+          
+          <div className="w-full flex items-center bg-[oklch(0.20_0_0)] rounded-lg p-1 border border-border">
+            <button
+              onClick={() => updateProfile({ displayedCurrency: '€' })}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md font-medium text-sm transition-all',
+                selectedCurrency === '€'
+                  ? 'bg-[oklch(0.72_0.19_45_/_0.4)] text-white shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <Euro className="w-4 h-4" />
+              EUR
+            </button>
+            <button
+              onClick={() => updateProfile({ displayedCurrency: '$' })}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-md font-medium text-sm transition-all',
+                selectedCurrency === '$'
+                  ? 'bg-[oklch(0.72_0.19_45_/_0.4)] text-white shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <DollarSign className="w-4 h-4" />
+              USD
+            </button>
+          </div>
         </div>
 
         {/* Actions section */}

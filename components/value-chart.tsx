@@ -12,6 +12,7 @@ import {
 } from 'recharts'
 import { format } from 'date-fns'
 import type { TooltipProps } from 'recharts'
+import { useStore } from '@/lib/store'
 
 type DataPoint = {
   timestamp: number
@@ -33,8 +34,14 @@ type ValueChartProps = {
   formatValue?: (v: number) => string
 }
 
+type ChartDataPoint = {
+  timestamp: number
+} & Record<string, number | undefined>
+
 // Custom tooltip
 function CustomTooltip({ active, payload, label }: TooltipProps<number, string>) {
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
+
   if (!active || !payload?.length) return null
   return (
     <div className="bg-[oklch(0.20_0_0)] border border-border rounded-lg px-3 py-2 text-sm shadow-xl">
@@ -49,7 +56,7 @@ function CustomTooltip({ active, payload, label }: TooltipProps<number, string>)
           />
           <span className="text-muted-foreground text-xs">{entry.name}:</span>
           <span className="font-semibold text-foreground">
-            ${Number(entry.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {currency}{Number(entry.value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
         </div>
       ))}
@@ -69,8 +76,8 @@ function buildChartData(series: Series[]) {
   if (allTimestamps.length === 0) return []
 
   // For each timestamp, compute value for each series (carry forward last known)
-  return allTimestamps.map((ts) => {
-    const point: Record<string, number | string> = { timestamp: ts }
+  return allTimestamps.map((ts): ChartDataPoint => {
+    const point: ChartDataPoint = { timestamp: ts }
     series.forEach((s) => {
       // Find last known value at or before this timestamp
       const matching = s.data.filter((d) => d.timestamp <= ts)
@@ -83,6 +90,7 @@ function buildChartData(series: Series[]) {
 }
 
 export function ValueChart({ series, height = 280 }: ValueChartProps) {
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
   const chartData = buildChartData(series)
 
   if (chartData.length === 0) {
@@ -102,7 +110,7 @@ export function ValueChart({ series, height = 280 }: ValueChartProps) {
   const range = maxTs - minTs || 1
 
   // Convert to scaled x values (0–1000 range) for proportional spacing
-  const scaledData = chartData.map((d) => ({
+  const scaledData: Array<ChartDataPoint & { x: number }> = chartData.map((d) => ({
     ...d,
     x: Math.round(((Number(d.timestamp) - minTs) / range) * 1000),
   }))
@@ -144,7 +152,7 @@ export function ValueChart({ series, height = 280 }: ValueChartProps) {
         />
         <YAxis
           tickFormatter={(v) =>
-            `$${Number(v) >= 1000 ? `${(Number(v) / 1000).toFixed(1)}k` : Number(v).toFixed(0)}`
+            `${currency}${Number(v) >= 1000 ? `${(Number(v) / 1000).toFixed(1)}k` : Number(v).toFixed(0)}`
           }
           tick={{ fill: 'oklch(0.60 0 0)', fontSize: 11 }}
           axisLine={false}
@@ -161,9 +169,12 @@ export function ValueChart({ series, height = 280 }: ValueChartProps) {
             stroke={s.color}
             strokeWidth={2}
             dot={(props) => {
-              const { cx, cy, payload, index } = props
+              const { cx, cy, index } = props
+              const row = typeof index === 'number' ? scaledData[index] : undefined
               // Only show dot for actual data points (not carried-forward values)
-              const hasActual = s.data.some((d) => d.timestamp === payload.timestamp)
+              const hasActual = row
+                ? s.data.some((d) => d.timestamp === Number(row.timestamp))
+                : false
               // Use series id + index for unique key
               const uniqueKey = `dot-${s.id}-${index}`
               if (!hasActual) return <g key={uniqueKey} />

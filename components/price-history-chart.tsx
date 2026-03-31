@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Loader2 } from 'lucide-react'
+import { useStore } from '@/lib/store'
 import {
   ResponsiveContainer,
   AreaChart,
@@ -21,10 +22,10 @@ type Props = {
   height?: number
 }
 
-function formatMoney(v: number) {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(2)}M`
-  if (v >= 1_000) return `$${(v / 1_000).toFixed(1)}K`
-  return `$${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+function formatMoney(v: number, currency: string) {
+  if (v >= 1_000_000) return `${currency}${(v / 1_000_000).toFixed(2)}M`
+  if (v >= 1_000) return `${currency}${(v / 1_000).toFixed(1)}K`
+  return `${currency}${v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
 function formatDate(ts: number) {
@@ -32,6 +33,7 @@ function formatDate(ts: number) {
 }
 
 export function PriceHistoryChart({ symbol, balance, color, height = 200 }: Props) {
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
   const [data, setData] = useState<PricePoint[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -106,7 +108,7 @@ export function PriceHistoryChart({ symbol, balance, color, height = 200 }: Prop
         />
         <YAxis
           domain={domain}
-          tickFormatter={(v) => formatMoney(v)}
+          tickFormatter={(v) => formatMoney(v, currency)}
           tick={{ fill: 'oklch(0.55 0 0)', fontSize: 10 }}
           axisLine={false}
           tickLine={false}
@@ -121,7 +123,7 @@ export function PriceHistoryChart({ symbol, balance, color, height = 200 }: Prop
             color: 'oklch(0.92 0 0)',
           }}
           formatter={(value: number, name: string) => [
-            formatMoney(value),
+            formatMoney(value, currency),
             name === 'value' ? `${symbol} holding value` : name,
           ]}
           labelStyle={{ color: 'oklch(0.65 0 0)', marginBottom: 4 }}

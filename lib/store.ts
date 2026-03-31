@@ -22,6 +22,7 @@ export type CryptoHolding = {
   id: string
   coin: string
   symbol: string
+  rawBalance?: number // optional token quantity if known
   snapshots: { value: number; timestamp: number }[]
 }
 
@@ -66,6 +67,7 @@ export type BinanceAccount = {
 export type UserProfile = {
   nickname: string
   avatarUrl: string | null // base64 data URL or null
+  displayedCurrency?: '€' | '$'
 }
 
 type AppStore = {
@@ -240,6 +242,7 @@ export const useStore = create<AppStore>()(
       userProfile: {
         nickname: 'Investor',
         avatarUrl: null,
+        displayedCurrency: '$',
       },
 
       updateProfile: (patch) =>
@@ -253,7 +256,7 @@ export const useStore = create<AppStore>()(
           bankAccounts: [],
           cryptoWallets: [],
           binanceAccounts: [],
-          userProfile: { nickname: 'Investor', avatarUrl: null },
+          userProfile: { nickname: 'Investor', avatarUrl: null, displayedCurrency: '$' },
           dashboardTitles: {
             overview: 'Portfolio Overview',
             crypto: 'Crypto Portfolio',

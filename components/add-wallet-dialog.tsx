@@ -55,6 +55,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
   const addBankAccount = useStore((s) => s.addBankAccount)
   const loadTestBankData = useStore((s) => s.loadTestBankData)
   const loadTestCryptoData = useStore((s) => s.loadTestCryptoData)
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
 
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<EntryType>('pick-entry-type')
@@ -376,7 +377,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
                     </span>
                   </div>
                   <span className="text-xs text-muted-foreground font-medium">
-                    {'≈ $'}{totalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
+                    {'≈ '}{currency}{totalUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} total
                   </span>
                 </div>
                 <div className="flex flex-col gap-0.5 max-h-40 overflow-y-auto rounded-lg bg-[oklch(0.18_0_0)] border border-border p-2">
@@ -390,7 +391,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-xs font-medium text-foreground">
-                          {'$'}{h.usdValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {currency}{h.usdValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                         <p className="text-[10px] text-muted-foreground">
                           {h.balance.toLocaleString(undefined, { maximumFractionDigits: 6 })} {h.symbol}
@@ -484,7 +485,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label className="text-xs text-muted-foreground">Current Balance (USD)</Label>
+              <Label className="text-xs text-muted-foreground">Current Balance ({currency})</Label>
               <Input
                 type="number"
                 min="0"

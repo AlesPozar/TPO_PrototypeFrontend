@@ -1,4 +1,5 @@
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { useStore } from '@/lib/store'
 import { cn } from '@/lib/utils'
 
 type StatCardProps = {
@@ -10,13 +11,14 @@ type StatCardProps = {
   className?: string
 }
 
-function formatCurrency(v: number) {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(2)}M`
-  if (v >= 1_000) return `$${(v / 1_000).toFixed(2)}K`
-  return `$${v.toFixed(2)}`
+function formatCurrency(v: number, currency: string) {
+  if (v >= 1_000_000) return `${currency}${(v / 1_000_000).toFixed(2)}M`
+  if (v >= 1_000) return `${currency}${(v / 1_000).toFixed(2)}K`
+  return `${currency}${v.toFixed(2)}`
 }
 
 export function StatCard({ label, value, previousValue, icon, accentColor, className }: StatCardProps) {
+  const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
   const hasPrev = previousValue !== undefined && previousValue !== null
   const change = hasPrev ? value - previousValue! : null
   const changePct = hasPrev && previousValue! !== 0 ? ((value - previousValue!) / previousValue!) * 100 : null
@@ -47,7 +49,7 @@ export function StatCard({ label, value, previousValue, icon, accentColor, class
 
       <div className="flex items-end gap-3">
         <span className="text-2xl font-semibold tracking-tight text-foreground">
-          {formatCurrency(value)}
+          {formatCurrency(value, currency)}
         </span>
 
         {change !== null && (
@@ -66,7 +68,7 @@ export function StatCard({ label, value, previousValue, icon, accentColor, class
             ) : (
               <Minus className="w-3 h-3" />
             )}
-            {changePct !== null ? `${Math.abs(changePct).toFixed(2)}%` : formatCurrency(Math.abs(change))}
+            {changePct !== null ? `${Math.abs(changePct).toFixed(2)}%` : formatCurrency(Math.abs(change), currency)}
           </div>
         )}
       </div>
@@ -74,7 +76,7 @@ export function StatCard({ label, value, previousValue, icon, accentColor, class
       {hasPrev && change !== null && (
         <p className="text-xs text-muted-foreground">
           {isPositive ? '+' : ''}
-          {formatCurrency(change)} from last entry
+          {formatCurrency(change, currency)} from last entry
         </p>
       )}
     </div>
