@@ -243,7 +243,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
             {step === 'pick-entry-type' && 'Add Investment'}
             {step === 'crypto-wallet' && 'Add Crypto Wallet'}
             {step === 'binance' && 'Connect Binance'}
-            {step === 'bank' && 'Add Bank Account'}
+            {step === 'bank' && 'Add New Investment To Track'}
           </DialogTitle>
           <DialogDescription className="sr-only">
             Add a new investment to track — crypto wallet, Binance, or bank overview.
