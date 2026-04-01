@@ -90,7 +90,7 @@ export function BankDashboard() {
             <p className="text-xs text-muted-foreground mt-0.5">{bankAccounts.length} accounts</p>
           </div>
         </div>
-        <AddEntryDialog mode="new-bank" triggerLabel="Add Account" />
+        <AddEntryDialog mode="new-bank" triggerLabel="Add Investment" />
       </div>
 
       {/* Top stats */}

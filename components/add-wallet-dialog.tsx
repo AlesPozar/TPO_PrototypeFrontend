@@ -230,8 +230,8 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
       <DialogTrigger asChild>
         <button
           className="flex items-center justify-center w-10 h-10 rounded-xl text-muted-foreground hover:text-foreground hover:bg-[oklch(0.20_0_0)] transition-all duration-200"
-          title="Add account"
-          aria-label="Add account"
+          title="Add investment"
+          aria-label="Add investment"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -240,13 +240,13 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
       <DialogContent className="bg-[oklch(0.14_0_0)] border-border max-w-sm max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-foreground">
-            {step === 'pick-entry-type' && 'Add Account'}
+            {step === 'pick-entry-type' && 'Add Investment'}
             {step === 'crypto-wallet' && 'Add Crypto Wallet'}
             {step === 'binance' && 'Connect Binance'}
             {step === 'bank' && 'Add Bank Account'}
           </DialogTitle>
           <DialogDescription className="sr-only">
-            Add a new account to track — crypto wallet, Binance, or bank account.
+            Add a new investment to track — crypto wallet, Binance, or bank overview.
           </DialogDescription>
         </DialogHeader>
 
@@ -507,7 +507,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
 
             <div className="flex gap-2">
               <Button variant="outline" className="flex-1 border-border text-muted-foreground hover:text-foreground bg-transparent h-9" onClick={() => setStep('pick-entry-type')}>Back</Button>
-              <Button className="flex-1 bg-[oklch(0.72_0.19_45)] text-black hover:bg-[oklch(0.66_0.19_45)] h-9" onClick={handleCreateBank}>Add Account</Button>
+              <Button className="flex-1 bg-[oklch(0.72_0.19_45)] text-black hover:bg-[oklch(0.66_0.19_45)] h-9" onClick={handleCreateBank}>Add Investment</Button>
             </div>
           </div>
         )}

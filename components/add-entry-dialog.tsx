@@ -94,7 +94,7 @@ export function AddEntryDialog({
   const titles: Record<Mode, string> = {
     'new-crypto': 'Add Crypto Holding',
     'update-crypto': 'Update Value',
-    'new-bank': 'Add Bank Account',
+    'new-bank': 'Add New Investment To Track',
     'update-bank': 'Update Balance',
     'new-wallet-holding': 'Add Holding',
     'update-wallet-holding': 'Update Value',
