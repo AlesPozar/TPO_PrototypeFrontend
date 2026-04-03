@@ -202,7 +202,7 @@ export function AddWalletDialog({ onCreated }: AddWalletDialogProps) {
     },
     {
       id: 'bank' as const,
-      label: 'Bank Account',
+      label: 'Traditional Asset (Bank account)',
       desc: 'Manually track a bank balance',
       icon: <Building2 className="w-8 h-8 text-muted-foreground" />,
     },
