@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useCallback } from 'react'
-import { Sparkles, Plus, Upload, FileText, X, Loader2, CheckCircle2 } from 'lucide-react'
+import { Sparkles, Upload, FileText, X, Loader2, CheckCircle2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -119,12 +119,11 @@ export function AIStatementUpload() {
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setTimeout(reset, 200) }}>
         <DialogTrigger asChild>
           <button
-            className="fixed bottom-6 right-6 flex items-center gap-2 px-4 py-3 rounded-full bg-[oklch(0.72_0.19_45)] text-black font-medium text-sm shadow-lg hover:bg-[oklch(0.66_0.19_45)] transition-all duration-200 hover:scale-105 z-50"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[oklch(0.72_0.19_45_/_0.15)] border border-[oklch(0.72_0.19_45_/_0.3)] text-[oklch(0.85_0.15_45)] font-medium text-sm hover:bg-[oklch(0.72_0.19_45_/_0.25)] transition-all duration-200"
             aria-label="AI Statement Analysis"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>AI</span>
-            <Plus className="w-3.5 h-3.5" />
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>AI+</span>
           </button>
         </DialogTrigger>
 
