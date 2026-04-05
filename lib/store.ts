@@ -64,6 +64,25 @@ export type BinanceAccount = {
   holdings: WalletHolding[]
 }
 
+export type TransactionType =
+  | 'Food' | 'Accessories' | 'Clothes' | 'Transport' | 'Entertainment' | 'Healthcare' | 'Utilities' | 'Other Expense'
+  | 'Job' | 'After Job' | 'Investment Payout' | 'Freelance' | 'Rental Income' | 'Other Income'
+
+export type Transaction = {
+  id: string
+  name: string
+  value: number
+  type: TransactionType
+  category: 'expense' | 'income'
+}
+
+export type AnalyzedStatement = {
+  id: string
+  fileName: string
+  analyzedAt: number
+  transactions: Transaction[]
+}
+
 export type UserProfile = {
   nickname: string
   avatarUrl: string | null // base64 data URL or null
@@ -75,6 +94,12 @@ type AppStore = {
   bankAccounts: BankAccount[]
   cryptoWallets: CryptoWallet[]
   binanceAccounts: BinanceAccount[]
+  analyzedStatements: AnalyzedStatement[]
+
+  // Analyzed statement actions
+  addAnalyzedStatement: (statement: Omit<AnalyzedStatement, 'id'>) => string
+  removeAnalyzedStatement: (id: string) => void
+  updateTransaction: (statementId: string, txId: string, patch: Partial<Pick<Transaction, 'name' | 'value' | 'type'>>) => void
 
   // User profile
   userProfile: UserProfile
@@ -238,6 +263,7 @@ export const useStore = create<AppStore>()(
       bankAccounts: [],
       cryptoWallets: [],
       binanceAccounts: [],
+      analyzedStatements: [],
 
       userProfile: {
         nickname: 'Investor',
@@ -256,6 +282,7 @@ export const useStore = create<AppStore>()(
           bankAccounts: [],
           cryptoWallets: [],
           binanceAccounts: [],
+          analyzedStatements: [],
           userProfile: { nickname: 'Investor', avatarUrl: null, displayedCurrency: '$' },
           dashboardTitles: {
             overview: 'Portfolio Overview',
@@ -269,6 +296,36 @@ export const useStore = create<AppStore>()(
         crypto: 'Crypto Portfolio',
         bank: 'Bank Accounts',
       },
+
+      addAnalyzedStatement: (statement) => {
+        const id = generateId()
+        set((state) => ({
+          analyzedStatements: [
+            ...state.analyzedStatements,
+            { ...statement, id },
+          ],
+        }))
+        return id
+      },
+
+      removeAnalyzedStatement: (id) =>
+        set((state) => ({
+          analyzedStatements: state.analyzedStatements.filter((s) => s.id !== id),
+        })),
+
+      updateTransaction: (statementId, txId, patch) =>
+        set((state) => ({
+          analyzedStatements: state.analyzedStatements.map((s) =>
+            s.id !== statementId
+              ? s
+              : {
+                  ...s,
+                  transactions: s.transactions.map((t) =>
+                    t.id !== txId ? t : { ...t, ...patch }
+                  ),
+                }
+          ),
+        })),
 
       addCryptoHolding: (coin, symbol, value, timestamp) =>
         set((state) => ({
@@ -537,6 +594,7 @@ export const useStore = create<AppStore>()(
       clearAllBankData: () =>
         set({
           bankAccounts: [],
+          analyzedStatements: [],
         }),
 
       clearAllCryptoData: () =>
