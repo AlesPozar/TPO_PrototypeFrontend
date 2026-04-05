@@ -12,10 +12,46 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { useStore } from '@/lib/store'
+import type { Transaction } from '@/lib/store'
 
 type UploadState = 'idle' | 'uploading' | 'success'
 
+function generateId() {
+  return Math.random().toString(36).slice(2, 10)
+}
+
+function buildDemoTransactions(): Transaction[] {
+  return [
+    // Expenses
+    { id: generateId(), name: 'Grocery Store', value: 142.50, type: 'Food', category: 'expense' },
+    { id: generateId(), name: 'Restaurant Dinner', value: 68.90, type: 'Food', category: 'expense' },
+    { id: generateId(), name: 'Coffee Shop', value: 24.30, type: 'Food', category: 'expense' },
+    { id: generateId(), name: 'H&M Purchase', value: 89.99, type: 'Clothes', category: 'expense' },
+    { id: generateId(), name: 'Nike Shoes', value: 134.00, type: 'Clothes', category: 'expense' },
+    { id: generateId(), name: 'Electronics Store', value: 215.00, type: 'Accessories', category: 'expense' },
+    { id: generateId(), name: 'Phone Accessories', value: 42.00, type: 'Accessories', category: 'expense' },
+    { id: generateId(), name: 'Bus Pass', value: 35.00, type: 'Transport', category: 'expense' },
+    { id: generateId(), name: 'Uber Rides', value: 47.20, type: 'Transport', category: 'expense' },
+    { id: generateId(), name: 'Cinema Tickets', value: 28.50, type: 'Entertainment', category: 'expense' },
+    { id: generateId(), name: 'Streaming Services', value: 22.98, type: 'Entertainment', category: 'expense' },
+    { id: generateId(), name: 'Pharmacy', value: 54.10, type: 'Healthcare', category: 'expense' },
+    { id: generateId(), name: 'Electricity Bill', value: 112.40, type: 'Utilities', category: 'expense' },
+    { id: generateId(), name: 'Internet Bill', value: 49.99, type: 'Utilities', category: 'expense' },
+    // Income
+    { id: generateId(), name: 'Monthly Salary', value: 3200.00, type: 'Job', category: 'income' },
+    { id: generateId(), name: 'Overtime Pay', value: 320.00, type: 'After Job', category: 'income' },
+    { id: generateId(), name: 'Weekend Shifts', value: 180.00, type: 'After Job', category: 'income' },
+    { id: generateId(), name: 'Dividend Payout', value: 450.00, type: 'Investment Payout', category: 'income' },
+    { id: generateId(), name: 'Stock Sale Gain', value: 275.00, type: 'Investment Payout', category: 'income' },
+    { id: generateId(), name: 'Web Design Project', value: 650.00, type: 'Freelance', category: 'income' },
+    { id: generateId(), name: 'Apartment Rental', value: 900.00, type: 'Rental Income', category: 'income' },
+  ]
+}
+
 export function AIStatementUpload() {
+  const addAnalyzedStatement = useStore((s) => s.addAnalyzedStatement)
+
   const [open, setOpen] = useState(false)
   const [file, setFile] = useState<File | null>(null)
   const [uploadState, setUploadState] = useState<UploadState>('idle')
@@ -61,9 +97,14 @@ export function AIStatementUpload() {
 
   function handleAnalyze() {
     if (!file) return
-    // Simulated upload state for UI demonstration
     setUploadState('uploading')
     setTimeout(() => {
+      // Build demo data and persist to store
+      addAnalyzedStatement({
+        fileName: file.name,
+        analyzedAt: Date.now(),
+        transactions: buildDemoTransactions(),
+      })
       setUploadState('success')
     }, 2000)
   }
@@ -75,7 +116,6 @@ export function AIStatementUpload() {
 
   return (
     <>
-      {/* Floating AI Button */}
       <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setTimeout(reset, 200) }}>
         <DialogTrigger asChild>
           <button
@@ -125,7 +165,7 @@ export function AIStatementUpload() {
                     onChange={handleInputChange}
                     className="sr-only"
                   />
-                  
+
                   {file ? (
                     <>
                       <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[oklch(0.70_0.16_155_/_0.15)]">
@@ -218,17 +258,14 @@ export function AIStatementUpload() {
                 <div className="text-center">
                   <p className="text-sm font-medium text-foreground">Analysis complete!</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Your transactions have been extracted and classified.
+                    21 transactions extracted and classified. Check the Bank dashboard to review your results.
                   </p>
                 </div>
-                <p className="text-xs text-muted-foreground/60 text-center">
-                  This is a UI preview. Full AI analysis will be available in the next update.
-                </p>
                 <Button
                   className="bg-[oklch(0.72_0.19_45)] text-black hover:bg-[oklch(0.66_0.19_45)] h-10 px-6"
                   onClick={handleClose}
                 >
-                  Done
+                  View Results
                 </Button>
               </div>
             )}

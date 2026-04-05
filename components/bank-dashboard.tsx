@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Wallet, Trash2 } from 'lucide-react'
+import { Wallet, Trash2, Sparkles } from 'lucide-react'
 import { useStore } from '@/lib/store'
 import { StatCard } from './stat-card'
 import { ValueChart } from './value-chart'
@@ -10,6 +10,7 @@ import { InlineRename } from './inline-rename'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { AIStatementUpload } from './ai-statement-upload'
+import { AIStatementAnalysis } from './ai-statement-analysis'
 import { DeleteDashboardDialog } from './delete-dashboard-dialog'
 
 export function BankDashboard() {
@@ -19,8 +20,22 @@ export function BankDashboard() {
   const renameDashboard = useStore((s) => s.renameDashboard)
   const clearAllBankData = useStore((s) => s.clearAllBankData)
   const currency = useStore((s) => s.userProfile.displayedCurrency ?? '$')
+  const analyzedStatements = useStore((s) => s.analyzedStatements)
 
   const [selected, setSelected] = useState<string | null>(null)
+  const [expandedStatements, setExpandedStatements] = useState<Set<string>>(new Set())
+
+  function toggleStatement(id: string) {
+    setExpandedStatements((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
 
   const bankTotal = useMemo(
     () =>
@@ -111,6 +126,25 @@ export function BankDashboard() {
           )
         })}
       </div>
+
+      {/* AI Analyzed Statements */}
+      {analyzedStatements.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-[oklch(0.72_0.19_45)]" />
+            <h2 className="text-sm font-semibold text-foreground">AI Statement Analyses</h2>
+            <span className="text-xs text-muted-foreground">({analyzedStatements.length})</span>
+          </div>
+          {analyzedStatements.map((statement) => (
+            <AIStatementAnalysis
+              key={statement.id}
+              statementId={statement.id}
+              isExpanded={expandedStatements.has(statement.id)}
+              onToggle={() => toggleStatement(statement.id)}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Total balance chart */}
       <div className="bg-card border border-border rounded-xl p-5 flex flex-col gap-2">
