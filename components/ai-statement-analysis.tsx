@@ -235,12 +235,9 @@ export function AIStatementAnalysis({ statementId, isExpanded, onToggle }: AISta
   return (
     <div className="bg-card border border-border rounded-xl overflow-hidden">
       {/* Header bar — always visible, acts as top toggle */}
-      <div
-        role="button"
-        tabIndex={0}
+      <button
         onClick={onToggle}
-        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onToggle()}
-        className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-[oklch(0.18_0_0)] transition-colors cursor-pointer group select-none"
+        className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-[oklch(0.18_0_0)] transition-colors text-left group"
         aria-expanded={isExpanded}
       >
         <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[oklch(0.72_0.19_45_/_0.15)]">
@@ -270,7 +267,7 @@ export function AIStatementAnalysis({ statementId, isExpanded, onToggle }: AISta
             <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
           )}
         </div>
-      </div>
+      </button>
 
       {/* Expanded content */}
       {isExpanded && (

@@ -105,10 +105,7 @@ export function BankDashboard() {
             <p className="text-xs text-muted-foreground mt-0.5">{bankAccounts.length} accounts</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <AddEntryDialog mode="new-bank" triggerLabel="Add Account" />
-          <AIStatementUpload />
-        </div>
+        <AddEntryDialog mode="new-bank" triggerLabel="Add Investment" />
       </div>
 
       {/* Top stats */}
@@ -265,6 +262,8 @@ export function BankDashboard() {
         </div>
       )}
 
+      {/* AI Statement Upload Floating Button */}
+      <AIStatementUpload />
     </div>
   )
 }
