@@ -10,6 +10,7 @@ import { BankDashboard } from '@/components/bank-dashboard'
 import { WalletDashboard } from '@/components/wallet-dashboard'
 import { UserProfile } from '@/components/user-profile'
 import { ChartSearchView } from '@/components/chart-search-view'
+import { AIStatementUpload } from '@/components/ai-statement-upload'
 
 export default function Home() {
   const router = useRouter()
@@ -43,6 +44,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
+      <AIStatementUpload />
       {/* Slim sidebar */}
       <Sidebar active={active} onChange={(v) => { setShowProfile(false); setSearchPair(null); setActive(v) }} />
 
