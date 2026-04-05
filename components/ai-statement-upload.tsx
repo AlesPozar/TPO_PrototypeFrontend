@@ -167,7 +167,6 @@ export function AIStatementUpload() {
                     <ul className="space-y-0.5 list-disc list-inside">
                       <li>Extract all transactions from your statement</li>
                       <li>Classify expenses into categories</li>
-                      <li>Identify recurring payments and subscriptions</li>
                       <li>Calculate spending summaries and trends</li>
                     </ul>
                   </div>
